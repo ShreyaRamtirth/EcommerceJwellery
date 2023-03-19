@@ -1,0 +1,142 @@
+<!-- <div class="container"> -->
+
+  <div>
+       <div class="container">
+          <nav class="navbar navbar-expand-lg custom_nav-container ">
+             <a class="navbar-brand" href="#"><img width="250" src="../../../assets/img/logo.png" alt="#" /></a>
+             <div class="collapse navbar-collapse"  id="navbarTogglerDemo01" [ngSwitch]="loggedType">
+                <div *ngSwitchCase="'home'">
+                  <ul class="navbar-nav mt-2 mt-lg-0">
+                    <li class="nav-item">
+                      <a class=" nav-link" routerLink="/register">Register</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class=" nav-link" routerLink="/login">Login</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="ml-auto" *ngSwitchCase="'customer'">
+                  <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                    <li class="nav-item">
+                      <a class=" nav-link" routerLink="/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class=" nav-link" routerLink="/home/address">Address</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class=" nav-link" routerLink="/home/cart">Cart</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class=" nav-link " (click)="logout()" style="cursor: pointer; float: right;">Log out</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="ml-auto" *ngSwitchCase="'admin'">
+                  <ul class="navbar-nav mt-2 mt-lg-0 ">
+                    <li class="nav-item">
+                      <a class=" nav-link" routerLink="/admin">Home</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class=" nav-link" routerLink="/admin/order">Orders</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class=" nav-link" (click)="logout()" style="cursor: pointer;">Log out</a>
+                    </li>
+                  </ul>
+                </div>
+             </div>
+          </nav>
+       </div>
+    </div>
+
+    <section class="slider_section " *ngIf="route.url === '/login' || route.url === '/register' " >
+      <div class="slider_bg_box">
+         <img src="https://themewagon.github.io/famms/images/slider-bg.jpg" alt="">
+      </div>
+      <div id="customCarousel1" class="carousel slide" data-ride="carousel">
+         <div class="carousel-inner">
+            <div class="carousel-item active">
+               <div class="container ">
+                  <div class="row">
+                     <div class="col-md-7 col-lg-6 ">
+                        <div class="detail-box">
+                           <h1>
+                              <span>
+                              Sale 10% Off
+                              </span>
+                              <br>
+                              On Everything
+                           </h1>
+                           <p>
+                              Explicabo esse amet tempora quibusdam laudantium, laborum eaque magnam fugiat hic? Esse dicta aliquid error repudiandae earum suscipit fugiat molestias, veniam, vel architecto veritatis delectus repellat modi impedit sequi.
+                           </p>
+                           <div class="btn-box">
+                              <a href="" class="btn1">
+                              Shop Now
+                              </a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+           
+         </div>
+         <!-- <div class="container">
+            <ol class="carousel-indicators">
+               <li data-target="#customCarousel1" data-slide-to="0" class="active"></li>
+               <li data-target="#customCarousel1" data-slide-to="1"></li>
+               <li data-target="#customCarousel1" data-slide-to="2"></li>
+            </ol>
+         </div> -->
+      </div>
+   </section>
+    
+<!--  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
+      aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+     <div class="collapse navbar-collapse" id="navbarTogglerDemo01" [ngSwitch]="loggedType">
+      <div *ngSwitchCase="'home'">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item">
+            <a class=" nav-link" routerLink="/register">Register</a>
+          </li>
+          <li class="nav-item">
+            <a class=" nav-link" routerLink="/login">Login</a>
+          </li>
+        </ul>
+      </div>
+      <div class="ml-auto" *ngSwitchCase="'customer'">
+        <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+          <li class="nav-item">
+            <a class=" nav-link" routerLink="/home">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class=" nav-link" routerLink="/home/address">Address</a>
+          </li>
+          <li class="nav-item">
+            <a class=" nav-link" routerLink="/home/cart">Cart</a>
+          </li>
+          <li class="nav-item">
+            <a class=" nav-link " (click)="logout()" style="cursor: pointer; float: right;">Log out</a>
+          </li>
+        </ul>
+      </div>
+      <div class="ml-auto" *ngSwitchCase="'admin'">
+        <ul class="navbar-nav mt-2 mt-lg-0 ">
+          <li class="nav-item">
+            <a class=" nav-link" routerLink="/admin">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class=" nav-link" routerLink="/admin/order">Orders</a>
+          </li>
+          <li class="nav-item">
+            <a class=" nav-link" (click)="logout()" style="cursor: pointer;">Log out</a>
+          </li>
+        </ul>
+      </div>
+    </div> 
+  </nav>
+</div> -->

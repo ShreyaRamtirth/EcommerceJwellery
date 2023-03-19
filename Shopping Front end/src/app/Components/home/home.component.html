@@ -1,0 +1,62 @@
+<app-navigation></app-navigation>
+
+<section class="product_section layout_padding">
+  <div class="container">
+     <div class="heading_container heading_center">
+        <h2>
+           Our <span>products</span>
+        </h2>
+     </div>
+     <div class="row">
+<div class="container">
+  <br>
+  <div class="row">
+    <div class="col-4">
+
+      <input type = "search"  type="text" class="form-control" placeholder="Search" (input)="searchByName($event.target.value)" />
+    </div>
+    <div class="col-4">
+    <select class="custom-select">
+      <option selected disabled>category</option>
+      <option value="1">Ring</option>
+      <option value="2">Necklace</option>
+      <option value="3">Pendent</option>
+      <option value="3">Earing</option>
+      <option value="3">Bangle</option>
+      <option value="3">Bracelet</option>
+      <option value="3">Anklet</option>
+      <option value="3">Nose Rings</option>
+      <option value="3">Toe Rings</option>
+    </select>
+  </div>
+  <div class="col-4">
+    <div class="slider" >
+      <div class="progress" [ngStyle]="{'left': left, 'right': right}"></div>
+    </div>
+    <div class="range-input">
+      
+      
+      <input type="range" class="range-min" min="0" max="10000" id="min" value="2500" step="100" (input)="searchByMinAmount($event.target.value)">
+      <input type="range" class="range-max" min="0" max="10000" id="max" value="7500" step="100" (input)="searchByMaxAmount($event.target.value)" >
+      <div class="row mr-auto">
+
+        <div class="col-6">
+          <label>Min: {{minAmount}}</label>
+        </div>
+        <div class="col-6 ">
+          <label class="">Max: {{maxAmount}}</label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+  <div class="row">
+    <div class="col-4 align-left" *ngFor="let product of products">
+      <app-product [product]="product" (productAddToCart)="addToCart($event)">Loading...</app-product>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</section>
