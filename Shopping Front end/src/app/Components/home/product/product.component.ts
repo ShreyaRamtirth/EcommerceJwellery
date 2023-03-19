@@ -16,10 +16,16 @@ export class ProductComponent implements OnInit {
   @Input() public product;
 
   @Output() productAddToCart: EventEmitter<Product> = new EventEmitter<Product>();
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,     private router: Router    ) { }
 
   ngOnInit() {
 
+  }
+
+  ViewProductDetail(e){
+    console.log(e);
+    let url: string = "/home/product/" + e;
+    this.router.navigateByUrl(url);
   }
 
   addToCart() {

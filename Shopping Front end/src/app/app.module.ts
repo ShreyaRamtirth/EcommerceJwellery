@@ -20,6 +20,7 @@ import { AddressComponent } from './Components/home/address/address.component';
 import { EditItemComponent } from './Components/admin/edit-item/edit-item.component';
 import { OrderItemComponent } from './Components/admin/order-item/order-item.component';
 import { AuthInterceptor } from './Service/AuthInterceptor';
+import { ProductDetailComponent } from './Components/home/product/product-detail/product-detail.component';
 
 const appRoutes:Routes=[
   { path: '',
@@ -44,6 +45,13 @@ const appRoutes:Routes=[
   component: HomeComponent,
   canActivate:[AuthguardGuard]
 },
+
+{
+  path:'home/product/:id',
+  component: ProductDetailComponent,
+  canActivate:[AuthguardGuard]
+},
+
 {
   path:'home/cart',
   component: CartItemComponent,
@@ -78,7 +86,8 @@ const appRoutes:Routes=[
     AddressComponent,
     AdminComponent,
     EditItemComponent,
-    OrderItemComponent
+    OrderItemComponent,
+    ProductDetailComponent
   ],
   imports: [
     BrowserModule,

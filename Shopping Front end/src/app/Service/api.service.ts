@@ -74,14 +74,30 @@ export class ApiService {
   }
 
    // Fetching all the products
-   getProducts(): Observable<any> {
-    return this.http.get<any>(environment.baseUrl+environment.productsUrl);
+   getProducts( prodname: string, category: string, minPrice: string, maxPrice: string ): Observable<any> {
+    
+    if( prodname != "" && category != "" )
+      return this.http.get<any>(environment.baseUrl+environment.productsUrl + "?productname="+ prodname + "&category="+ category + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice);
+    
+    else if( prodname != "" && category == "" )
+      return this.http.get<any>(environment.baseUrl+environment.productsUrl + "?productname="+ prodname +  + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice);
+    
+    else if( prodname == "" && category != "" )
+      return this.http.get<any>(environment.baseUrl+environment.productsUrl + "?category="+ category  + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice);
+
+    else
+      return this.http.get<any>(environment.baseUrl+environment.productsUrl  + "?minPrice=" + minPrice + "&maxPrice=" + maxPrice);
+    
+  }
+
+  getProductId(id: number){
+    return this.http.get<any>(environment.baseUrl+environment.productUrl +"/"+ id);
   }
 
   // Get products from search
-  searchProductByName( prodname: string ): Observable<any> {
-    return this.http.get<any>(environment.baseUrl+environment.productsSearchUrl +"/"+ prodname );
-  }
+  // searchProductByName( prodname: string ): Observable<any> {
+  //   return this.http.get<any>(environment.baseUrl+environment.productsSearchUrl +"/"+ prodname );
+  // }
 
   // Add product in the system
   addProduct( desc: string,
@@ -99,13 +115,13 @@ export class ApiService {
   
   // update Product for Logged Admin User
   updateProduct( desc: string,
-    quan: string, price: string, prodname: string, image: File, productid: any): Observable<any> {
+    quan: string, price: string, prodname: string, category: string, image: File, productid: any): Observable<any> {
     const formData: FormData = new FormData();
     formData.append("description", desc);
     formData.append("price", price);
     formData.append("productname", prodname);
     formData.append("quantity", quan);
-    // formData.append("category", category);
+    formData.append("category", category);
     formData.append("file", image);
     formData.append("productId", productid);
     return this.http.put<any>(environment.baseUrl+environment.updateProductUrl, formData);

@@ -1,6 +1,7 @@
 package com.spring.controller;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -68,14 +69,26 @@ public class UserController {
 	@Autowired
 	private OrderRepository ordRepo;
 
-	@GetMapping("/getProducts/{productname}")
-	public ResponseEntity<ProductResponse> getProductsbyname(Authentication auth, @PathVariable("productname") String productname) throws IOException {
-		System.out.println("product name = "+productname);
+
+	@GetMapping("/getProducts")
+	public ResponseEntity<ProductResponse> getProductsbyname(Authentication auth, @RequestParam(defaultValue = "empty",name = "productname") String productname, @RequestParam(defaultValue = "All",name = "category") String category, @RequestParam(defaultValue = "2500",name = "minPrice") String minPrice,
+			@RequestParam(defaultValue = "7500",name = "maxPrice") String maxPrice
+			) throws IOException {
 		ProductResponse resp = new ProductResponse();
 		try {
 			resp.setStatus(ResponseCode.SUCCESS_CODE);
 			resp.setMessage(ResponseCode.LIST_SUCCESS_MESSAGE);
-			resp.setOblist(prodRepo.findByProductnameContains(productname));
+
+			if(!productname.equals("empty") && !category.equals("All") ) {
+				resp.setOblist(prodRepo.findByProductnameAndCategoryAndPriceBetween(productname,category,minPrice,maxPrice));
+			}else if(!productname.equals("empty") && category.equals("All") ) {
+				resp.setOblist(prodRepo.findByProductnameContains(productname,minPrice,maxPrice));
+			}else if(productname.equals("empty") && !category.equals("All")) {
+				resp.setOblist(prodRepo.findByCategory(category, minPrice, maxPrice));
+			}
+			else {
+				resp.setOblist(prodRepo.findAll(minPrice, maxPrice));
+			}
 		} catch (Exception e) {
 			throw new ProductCustomException("Unable to retrieve products, please try again");
 		}
@@ -142,13 +155,13 @@ public class UserController {
 		return new ResponseEntity<Response>(resp, HttpStatus.OK);
 	}
 
-	@GetMapping("/getProducts")
-	public ResponseEntity<ProductResponse> getProducts(Authentication auth) throws IOException {
+	@GetMapping("/getProduct/{id}")
+	public ResponseEntity<ProductResponse> getProductByID(Authentication auth, @PathVariable int id) throws IOException {
 		ProductResponse resp = new ProductResponse();
 		try {
 			resp.setStatus(ResponseCode.SUCCESS_CODE);
 			resp.setMessage(ResponseCode.LIST_SUCCESS_MESSAGE);
-			resp.setOblist(prodRepo.findAll());
+			resp.setOblist(Collections.singletonList(prodRepo.findByProductid(id)));
 		} catch (Exception e) {
 			throw new ProductCustomException("Unable to retrieve products, please try again");
 		}

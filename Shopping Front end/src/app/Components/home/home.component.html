@@ -16,17 +16,18 @@
       <input type = "search"  type="text" class="form-control" placeholder="Search" (input)="searchByName($event.target.value)" />
     </div>
     <div class="col-4">
-    <select class="custom-select">
+    <select class="custom-select" (change)="onChangeCategory($event.target.value)" >
       <option selected disabled>category</option>
-      <option value="1">Ring</option>
-      <option value="2">Necklace</option>
-      <option value="3">Pendent</option>
-      <option value="3">Earing</option>
-      <option value="3">Bangle</option>
-      <option value="3">Bracelet</option>
-      <option value="3">Anklet</option>
-      <option value="3">Nose Rings</option>
-      <option value="3">Toe Rings</option>
+      <option value="All">All</option>
+      <option value="Ring">Ring</option>
+      <option value="Necklace">Necklace</option>
+      <option value="Pendent">Pendent</option>
+      <option value="Earing">Earing</option>
+      <option value="Bangle">Bangle</option>
+      <option value="Bracelet">Bracelet</option>
+      <option value="Anklet">Anklet</option>
+      <option value="Nose Rings">Nose Rings</option>
+      <option value="Toe Rings">Toe Rings</option>
     </select>
   </div>
   <div class="col-4">

@@ -20,6 +20,24 @@
                                                 ngModel [(ngModel)]="product.quantity">
                                 </div>
                                 <div class="form-group">
+                                        <!-- <input type="text" class="form-control" placeholder="category" name="category" #category
+                                                ngModel> -->
+                                                <select  class="custom-select"  (change)="onChangeCategory($event.target.value)" name="category" #category
+                                                ngModel [(ngModel)]="product.category" >
+                                                        <option selected disabled >category</option>
+                                                        <option value="All">All</option>
+                                                        <option value="Ring">Ring</option>
+                                                        <option value="Necklace">Necklace</option>
+                                                        <option value="Pendent">Pendent</option>
+                                                        <option value="Earing">Earing</option>
+                                                        <option value="Bangle">Bangle</option>
+                                                        <option value="Bracelet">Bracelet</option>
+                                                        <option value="Anklet">Anklet</option>
+                                                        <option value="Nose Rings">Nose Rings</option>
+                                                        <option value="Toe Rings">Toe Rings</option>
+                                                      </select>
+                                </div>
+                                <div class="form-group">
                                         <input type="text" class="form-control" placeholder="price" name="price" #price
                                                 ngModel [(ngModel)]="product.price">
                                 </div>

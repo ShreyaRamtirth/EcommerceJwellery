@@ -16,6 +16,8 @@ export class HomeComponent implements OnInit {
   right: any;
   left: any;
   priceGap: 500;
+  productname: string = "";
+  category: string = "";
 
   constructor(private api: ApiService) {
     this.minAmount = 2500;
@@ -25,7 +27,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     if (this.api.isAuthenticated) {
-      this.api.getProducts().subscribe(
+      this.api.getProducts(this.productname, this.category, this.minAmount.toString(), this.maxAmount.toString()).subscribe(
         res => {
           this.products = res.oblist;
         }
@@ -42,22 +44,41 @@ export class HomeComponent implements OnInit {
 
   searchByName(e){
     // console.log(e);
-    this.api.searchProductByName(e).subscribe(res => {
-      this.products = res.oblist;
-      
-    })
+    this.productname = e;
+    this.api.getProducts(this.productname, this.category, this.minAmount.toString(), this.maxAmount.toString()).subscribe(
+      res => {
+        this.products = res.oblist;
+      }
+    );
     
+  }
+
+  onChangeCategory(e){
+    this.category = e;
+    this.api.getProducts(this.productname, this.category, this.minAmount.toString(), this.maxAmount.toString()).subscribe(
+      res => {
+        this.products = res.oblist;
+      }
+    );
   }
 
   searchByMinAmount(e){
     this.minAmount = e;
     this.left = (<number> this.minAmount / 10000) + "%";
-    console.log(e);
+    this.api.getProducts(this.productname, this.category, this.minAmount.toString(), this.maxAmount.toString()).subscribe(
+      res => {
+        this.products = res.oblist;
+      }
+    );
   }
   searchByMaxAmount(e){
     this.maxAmount = e;
     this.right = 100 - (<number>this.maxAmount / 10000) * 100 + "%";
-    console.log(e);
+    this.api.getProducts(this.productname, this.category, this.minAmount.toString(), this.maxAmount.toString()).subscribe(
+      res => {
+        this.products = res.oblist;
+      }
+    );
   }
 
 

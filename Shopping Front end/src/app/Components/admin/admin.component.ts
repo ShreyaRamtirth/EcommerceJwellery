@@ -15,12 +15,16 @@ export class AdminComponent implements OnInit {
   fileToUpload: File = null;
   showAdd = false;
   auth: string;
+  minAmount: Number = 0;
+  maxAmount: Number = 10000;
+  productname: string = "";
+  category: string = "";
   constructor(private api: ApiService, private router: Router) { }
   imageUrl: string = "/assets/img/noimage.png";
   ngOnInit() {
     if (this.api.isAuthenticated) {
       this.auth = this.api.getToken();
-      this.api.getProducts().subscribe(
+      this.api.getProducts(this.productname,this.category,this.minAmount.toString(),this.maxAmount.toString()).subscribe(
         res => {
           this.products = res.oblist;
         }
@@ -63,4 +67,6 @@ export class AdminComponent implements OnInit {
     };
     this.router.navigate(["admin/edit"], navigationExtras);
   }
+
+  // validation()
 }

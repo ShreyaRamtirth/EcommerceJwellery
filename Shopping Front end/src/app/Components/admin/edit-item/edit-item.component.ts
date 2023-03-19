@@ -23,11 +23,14 @@ export class EditItemComponent implements OnInit {
   auth: string;
   prodid: string;
   imageUrl: string = "/assets/img/noimage.png";
-
+  minAmount: Number = 0;
+  maxAmount: Number = 10000;
+  productname: string = "";
+  category: string = "";
   constructor(private route: ActivatedRoute, private api: ApiService) {
     if (this.api.isAuthenticated) {
       this.auth = this.api.getToken();
-      this.api.getProducts().subscribe(
+      this.api.getProducts(this.productname,this.category,this.minAmount.toString(),this.maxAmount.toString()).subscribe(
         res => {
           res.oblist.forEach(pro => {
             if (pro.productid == this.prodid) {
@@ -57,9 +60,13 @@ export class EditItemComponent implements OnInit {
 
   updateProd(desc:any, quan:any, price:any, prodname:any, image:any) {
     console.log(this.product.productid)
-    this.api.updateProduct(desc.value, quan.value, price.value, prodname.value, this.fileToUpload, this.product.productid).subscribe(res => {
+    this.api.updateProduct(desc.value, quan.value, price.value, prodname.value, this.category, this.fileToUpload, this.product.productid).subscribe(res => {
       console.log(res);
     });
+  }
+
+  onChangeCategory(e){
+    this.category = e;
   }
 
 }

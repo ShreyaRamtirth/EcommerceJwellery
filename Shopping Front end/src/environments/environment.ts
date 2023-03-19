@@ -14,6 +14,7 @@ export const environment = {
   addAddressUrl : "/user/addAddress",
   viewAddressUrl : "/user/getAddress",
   productsUrl : "/user/getProducts",
+  productUrl : "/user/getProduct",
   productsSearchUrl : "/user/getProducts",
   addProductUrl : "/admin/addProduct",
   deleteProductUrl : "/admin/delProduct",
