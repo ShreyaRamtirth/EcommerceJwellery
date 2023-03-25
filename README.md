@@ -1,4 +1,3 @@
-<div align="center">
 
   <h1>Awesome Readme Template</h1>
   
