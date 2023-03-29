@@ -21,6 +21,8 @@ import { EditItemComponent } from './Components/admin/edit-item/edit-item.compon
 import { OrderItemComponent } from './Components/admin/order-item/order-item.component';
 import { AuthInterceptor } from './Service/AuthInterceptor';
 import { ProductDetailComponent } from './Components/home/product/product-detail/product-detail.component';
+import { OrderHistoryComponent } from './Components/home/order-history/order-history.component';
+
 
 const appRoutes:Routes=[
   { path: '',
@@ -58,6 +60,11 @@ const appRoutes:Routes=[
   canActivate:[AuthguardGuard]
 },
 {
+  path:'home/orders',
+  component: OrderHistoryComponent,
+  canActivate:[AuthguardGuard]
+},
+{
   path:'home/address',
   component: AddressComponent,
   canActivate:[AuthguardGuard]
@@ -87,7 +94,8 @@ const appRoutes:Routes=[
     AdminComponent,
     EditItemComponent,
     OrderItemComponent,
-    ProductDetailComponent
+    ProductDetailComponent,
+    OrderHistoryComponent 
   ],
   imports: [
     BrowserModule,

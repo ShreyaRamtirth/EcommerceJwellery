@@ -21,8 +21,13 @@
                         {{product.category}}
 
                        </h5>
-                       <h6>
-                        ₹ {{product.price}}                       </h6>
+                       <div>
+
+                          <h6>
+                            <s style="color: rgba(255, 0, 0, 0.397)"> ₹{{ product.price * 10/9 | number:'1.0-0' }}</s> </h6> 
+                             <h6>
+                                ₹ {{product.price}}  </h6>
+                              </div>
                     </div>
                     {{product.description}}
                  </div>

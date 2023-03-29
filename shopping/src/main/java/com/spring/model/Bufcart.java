@@ -21,6 +21,22 @@ public class Bufcart implements Serializable {
 
 	@Column(name = "order_id", nullable = true)
 	private int orderId;
+	
+	private String email;
+
+	@Column(name = "date_added")
+	private Date dateAdded;
+
+	private int quantity;
+	private double price;
+	@Column(name = "product_id")
+	private int productId;
+
+	private String productname;
+	
+	
+	
+	//getters and setters
 
 	public int getOrderId() {
 		return orderId;
@@ -37,17 +53,6 @@ public class Bufcart implements Serializable {
 				+ ", productname=" + productname + "]";
 	}
 
-	private String email;
-
-	@Column(name = "date_added")
-	private Date dateAdded;
-
-	private int quantity;
-	private double price;
-	@Column(name = "product_id")
-	private int productId;
-
-	private String productname;
 
 	public String getProductname() {
 		return productname;

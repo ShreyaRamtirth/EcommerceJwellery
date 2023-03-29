@@ -30,7 +30,7 @@
                         <a href="#" class="d-block text-dark">  {{cart.productname}}  </a>
                         <small>
                           <span class="text-muted">Original Price:</span>
-                          <span class="text-dark" > {{cart.price +( cart.price * 10)/100 | currency:'INR'}} </span> &nbsp;
+                          <span class="text-dark" > {{cart.price * 10/9 | currency:'INR'}} </span> &nbsp;
                           <span class="text-muted">Discount: </span> 10%
                           <span class="text-muted">Ships from: </span> India
                         </small>

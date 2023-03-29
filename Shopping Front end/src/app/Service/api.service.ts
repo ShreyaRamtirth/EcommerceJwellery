@@ -76,8 +76,11 @@ export class ApiService {
    // Fetching all the products
    getProducts( prodname: string, category: string, minPrice: string, maxPrice: string ): Observable<any> {
     
-    if( prodname != "" && category != "" )
+     
+     if( prodname != "" && category != "" ){
+
       return this.http.get<any>(environment.baseUrl+environment.productsUrl + "?productname="+ prodname + "&category="+ category + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice);
+    }
     
     else if( prodname != "" && category == "" )
       return this.http.get<any>(environment.baseUrl+environment.productsUrl + "?productname="+ prodname +  + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice);
@@ -135,6 +138,9 @@ export class ApiService {
   // fetch available orders placed
   getOrders() {
     return this.http.get<any>(environment.baseUrl+environment.viewOrderUrl)
+  }
+  getOrdersHistory() {
+    return this.http.get<any>(environment.baseUrl+environment.viewOrderHistoryUrl)
   }
 
    // place the order 

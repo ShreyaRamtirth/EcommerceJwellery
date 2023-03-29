@@ -9,6 +9,7 @@ export const environment = {
   loginUrl : "/home/auth",
   addToCartUrl : "/user/addToCart",
   viewCartUrl : "/user/viewCart",
+  viewOrderHistoryUrl : "/user/orderHistory",
   updateCartUrl : "/user/updateCart",
   deleteCartUrl: "/user/delCart",
   addAddressUrl : "/user/addAddress",

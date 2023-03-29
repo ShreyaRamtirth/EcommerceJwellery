@@ -24,7 +24,8 @@ public class Product implements Serializable {
 	private int quantity;
 	@Lob
 	private byte[] productimage;
-
+	
+	//getters and setters
 	public int getProductid() {
 		return productid;
 	}

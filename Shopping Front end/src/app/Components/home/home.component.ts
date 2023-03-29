@@ -45,9 +45,12 @@ export class HomeComponent implements OnInit {
   searchByName(e){
     // console.log(e);
     this.productname = e;
+    this.category = "All";
     this.api.getProducts(this.productname, this.category, this.minAmount.toString(), this.maxAmount.toString()).subscribe(
       res => {
         this.products = res.oblist;
+        // console.log(res.oblist);
+        
       }
     );
     

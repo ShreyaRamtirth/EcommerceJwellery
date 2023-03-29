@@ -1,12 +1,17 @@
 package com.spring.model;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -14,7 +19,7 @@ import javax.persistence.Table;
 public class PlaceOrder {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "order_id")
 	private int orderId;
 
@@ -28,7 +33,12 @@ public class PlaceOrder {
 
 	@Column(name = "total_cost")
 	private double totalCost;
-
+	
+	@OneToMany(fetch =FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "order_id")
+	private List<PurchaseProduct> products;	
+	
+	//getters and setters
 	public int getOrderId() {
 		return orderId;
 	}
@@ -49,12 +59,27 @@ public class PlaceOrder {
 		return orderDate;
 	}
 
+	public List<PurchaseProduct> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<PurchaseProduct> products) {
+		this.products = products;
+	}
+
 	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;
 	}
 
 	public double getTotalCost() {
 		return totalCost;
+	}
+
+	
+	@Override
+	public String toString() {
+		return "PlaceOrder [orderId=" + orderId + ", email=" + email + ", orderStatus=" + orderStatus + ", orderDate="
+				+ orderDate + ", totalCost=" + totalCost + ", products=" + products + "]";
 	}
 
 	public void setTotalCost(double totalCost) {

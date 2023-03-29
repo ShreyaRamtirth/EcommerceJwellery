@@ -8,7 +8,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-/*import org.springframework.jms.core.JmsTemplate;*/
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +24,7 @@ import com.spring.exception.OrderCustomException;
 import com.spring.exception.ProductCustomException;
 import com.spring.model.PlaceOrder;
 import com.spring.model.Product;
+import com.spring.model.PurchaseProduct;
 import com.spring.repository.CartRepository;
 import com.spring.repository.OrderRepository;
 import com.spring.repository.ProductRepository;
@@ -47,7 +47,7 @@ public class AdminController {
 
 	@Autowired
 	private CartRepository cartRepo;
-	
+
 	/*
 	 * @Autowired private JmsTemplate jmsTemplate;
 	 */
@@ -62,7 +62,8 @@ public class AdminController {
 			@RequestParam(name = WebConstants.PROD_QUANITY) String quantity) throws IOException {
 		ProductResponse resp = new ProductResponse();
 		if (Validator.isStringEmpty(productname) || Validator.isStringEmpty(description)
-				|| Validator.isStringEmpty(price) || Validator.isStringEmpty(quantity) || Validator.isStringEmpty(category)) {
+				|| Validator.isStringEmpty(price) || Validator.isStringEmpty(quantity)
+				|| Validator.isStringEmpty(category)) {
 			resp.setStatus(ResponseCode.BAD_REQUEST_CODE);
 			resp.setMessage(ResponseCode.BAD_REQUEST_MESSAGE);
 			return new ResponseEntity<ProductResponse>(resp, HttpStatus.NOT_ACCEPTABLE);
@@ -78,7 +79,7 @@ public class AdminController {
 					prod.setProductimage(prodImage.getBytes());
 				}
 				prodRepo.save(prod);
-				//jmsTemplate.convertAndSend("product_queue", prod);
+				// jmsTemplate.convertAndSend("product_queue", prod);
 				resp.setStatus(ResponseCode.SUCCESS_CODE);
 				resp.setMessage(ResponseCode.ADD_SUCCESS_MESSAGE);
 				resp.setOblist(prodRepo.findAll());
@@ -108,7 +109,7 @@ public class AdminController {
 			try {
 				if (prodImage != null) {
 					Product prod = new Product(Integer.parseInt(productid), description, productname,
-							Double.parseDouble(price), Integer.parseInt(quantity), category , prodImage.getBytes());
+							Double.parseDouble(price), Integer.parseInt(quantity), category, prodImage.getBytes());
 					prodRepo.save(prod);
 				} else {
 					Product prodOrg = prodRepo.findByProductid(Integer.parseInt(productid));
@@ -159,7 +160,8 @@ public class AdminController {
 				ord.setOrderBy(po.getEmail());
 				ord.setOrderId(po.getOrderId());
 				ord.setOrderStatus(po.getOrderStatus());
-				ord.setProducts(cartRepo.findAllByOrderId(po.getOrderId()));
+				ord.setProducts(po.getProducts());
+				System.out.println(po.getProducts());
 				orderList.add(ord);
 			});
 			resp.setOrderlist(orderList);
@@ -169,8 +171,6 @@ public class AdminController {
 
 		return new ResponseEntity<ViewOrderResponse>(resp, HttpStatus.OK);
 	}
-	
-	
 
 	@PostMapping("/updateOrder")
 	public ResponseEntity<ServerResponse> updateOrders(@RequestParam(name = WebConstants.ORD_ID) String orderId,
@@ -184,13 +184,25 @@ public class AdminController {
 		} else {
 			try {
 				PlaceOrder pc = ordRepo.findByOrderId(Integer.parseInt(orderId));
+				for (PurchaseProduct product : pc.getProducts()) {
+					Product actualProduct = prodRepo.findByProductid(product.getProduct().getProductid());
+					if (orderStatus.equals("Approved")) {
+						if (product.getQuantity() > actualProduct.getQuantity())
+							throw new OrderCustomException("Unable to approve order, quantity not available");
+						else {
+							actualProduct.setQuantity(actualProduct.getQuantity() - product.getQuantity());
+							prodRepo.save(actualProduct);
+						}
+					}
+				}
+
 				pc.setOrderStatus(orderStatus);
 				pc.setOrderDate(new Date(System.currentTimeMillis()));
 				ordRepo.save(pc);
 				resp.setStatus(ResponseCode.SUCCESS_CODE);
 				resp.setMessage(ResponseCode.UPD_ORD_SUCCESS_MESSAGE);
 			} catch (Exception e) {
-				throw new OrderCustomException("Unable to retrieve orderss, please try again");
+				throw new OrderCustomException("Unable to retrieve orders, please try again");
 			}
 		}
 		return new ResponseEntity<ServerResponse>(resp, HttpStatus.OK);

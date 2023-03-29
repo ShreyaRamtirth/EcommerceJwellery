@@ -3,19 +3,19 @@ package com.spring.response;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.spring.model.Bufcart;
+import com.spring.model.PurchaseProduct;
 
 public class Order {
 	private int orderId;
 	private String orderBy;
 	private String orderStatus;
-	private List<Bufcart> products = new ArrayList<>();
+	private List<PurchaseProduct> products = new ArrayList<>();
 
-	public List<Bufcart> getProducts() {
+	public List<PurchaseProduct> getProducts() {
 		return products;
 	}
 
-	public void setProducts(List<Bufcart> products) {
+	public void setProducts(List<PurchaseProduct> products) {
 		this.products = products;
 	}
 

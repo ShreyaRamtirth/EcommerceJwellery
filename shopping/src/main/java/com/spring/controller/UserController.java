@@ -1,6 +1,7 @@
 package com.spring.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +29,7 @@ import com.spring.constants.ResponseCode;
 import com.spring.constants.WebConstants;
 import com.spring.exception.AddressCustomException;
 import com.spring.exception.CartCustomException;
+import com.spring.exception.OrderCustomException;
 import com.spring.exception.PlaceOrderCustomException;
 import com.spring.exception.ProductCustomException;
 import com.spring.exception.UserCustomException;
@@ -34,6 +37,7 @@ import com.spring.model.Address;
 import com.spring.model.Bufcart;
 import com.spring.model.PlaceOrder;
 import com.spring.model.Product;
+import com.spring.model.PurchaseProduct;
 import com.spring.model.User;
 import com.spring.repository.AddressRepository;
 import com.spring.repository.CartRepository;
@@ -41,10 +45,12 @@ import com.spring.repository.OrderRepository;
 import com.spring.repository.ProductRepository;
 import com.spring.repository.UserRepository;
 import com.spring.response.CartResponse;
+import com.spring.response.Order;
 import com.spring.response.ProductResponse;
 import com.spring.response.Response;
 import com.spring.response.ServerResponse;
 import com.spring.response.UserResponse;
+import com.spring.response.ViewOrderResponse;
 import com.spring.utility.Validator;
 
 @CrossOrigin(origins = WebConstants.ALLOWED_URL)
@@ -71,22 +77,24 @@ public class UserController {
 
 
 	@GetMapping("/getProducts")
-	public ResponseEntity<ProductResponse> getProductsbyname(Authentication auth, @RequestParam(defaultValue = "empty",name = "productname") String productname, @RequestParam(defaultValue = "All",name = "category") String category, @RequestParam(defaultValue = "2500",name = "minPrice") String minPrice,
-			@RequestParam(defaultValue = "7500",name = "maxPrice") String maxPrice
-			) throws IOException {
+	public ResponseEntity<ProductResponse> getProductsbyname(Authentication auth,
+			@RequestParam(defaultValue = "empty", name = "productname") String productname,
+			@RequestParam(defaultValue = "All", name = "category") String category,
+			@RequestParam(defaultValue = "2500", name = "minPrice") String minPrice,
+			@RequestParam(defaultValue = "7500", name = "maxPrice") String maxPrice) throws IOException {
 		ProductResponse resp = new ProductResponse();
 		try {
 			resp.setStatus(ResponseCode.SUCCESS_CODE);
 			resp.setMessage(ResponseCode.LIST_SUCCESS_MESSAGE);
 
-			if(!productname.equals("empty") && !category.equals("All") ) {
-				resp.setOblist(prodRepo.findByProductnameAndCategoryAndPriceBetween(productname,category,minPrice,maxPrice));
-			}else if(!productname.equals("empty") && category.equals("All") ) {
-				resp.setOblist(prodRepo.findByProductnameContains(productname,minPrice,maxPrice));
-			}else if(productname.equals("empty") && !category.equals("All")) {
+			if (!productname.equals("empty") && !category.equals("All")) {
+				resp.setOblist(prodRepo.findByProductnameAndCategoryAndPriceBetween(productname, category, minPrice,
+						maxPrice));
+			} else if (!productname.equals("empty") && category.equals("All")) {
+				resp.setOblist(prodRepo.findByProductnameContains(productname, minPrice, maxPrice));
+			} else if (productname.equals("empty") && !category.equals("All")) {
 				resp.setOblist(prodRepo.findByCategory(category, minPrice, maxPrice));
-			}
-			else {
+			} else {
 				resp.setOblist(prodRepo.findAll(minPrice, maxPrice));
 			}
 		} catch (Exception e) {
@@ -95,6 +103,37 @@ public class UserController {
 		return new ResponseEntity<ProductResponse>(resp, HttpStatus.OK);
 	}
 
+	
+	@GetMapping("/orderHistory")
+	public ResponseEntity<?> orderHistory(Authentication auth){
+		UserDetails userDetails = (UserDetails) auth.getPrincipal();
+		User user = userRepo.findByUsername(userDetails.getUsername()).get();
+		List<PlaceOrder> orders = ordRepo.findByEmail(user.getEmail());
+		
+		ViewOrderResponse resp = new ViewOrderResponse();
+		try {
+			resp.setStatus(ResponseCode.SUCCESS_CODE);
+			resp.setMessage(ResponseCode.VIEW_SUCCESS_MESSAGE);
+			List<Order> orderList = new ArrayList<>();
+
+			orders.forEach((po) -> {
+				Order ord = new Order();
+				ord.setOrderBy(po.getEmail());
+				ord.setOrderId(po.getOrderId());
+				ord.setOrderStatus(po.getOrderStatus());
+				ord.setProducts(po.getProducts());
+				System.out.println(po.getProducts());
+				orderList.add(ord);
+			});
+			resp.setOrderlist(orderList);
+		} catch (Exception e) {
+			throw new OrderCustomException("Unable to retrieve orderss, please try again");
+		}
+
+		return new ResponseEntity<ViewOrderResponse>(resp, HttpStatus.OK);
+
+		
+	}
 	
 	@PostMapping("/addAddress")
 	public ResponseEntity<UserResponse> addAddress(@RequestBody Address address, Authentication auth) {
@@ -156,7 +195,8 @@ public class UserController {
 	}
 
 	@GetMapping("/getProduct/{id}")
-	public ResponseEntity<ProductResponse> getProductByID(Authentication auth, @PathVariable int id) throws IOException {
+	public ResponseEntity<ProductResponse> getProductByID(Authentication auth, @PathVariable int id)
+			throws IOException {
 		ProductResponse resp = new ProductResponse();
 		try {
 			resp.setStatus(ResponseCode.SUCCESS_CODE);
@@ -256,6 +296,7 @@ public class UserController {
 		return new ResponseEntity<CartResponse>(resp, HttpStatus.OK);
 	}
 
+//	@Transactional
 	@GetMapping("/placeOrder")
 	public ResponseEntity<ServerResponse> placeOrder(Authentication auth) throws IOException {
 
@@ -270,14 +311,28 @@ public class UserController {
 			po.setOrderStatus(ResponseCode.ORD_STATUS_CODE);
 			double total = 0;
 			List<Bufcart> buflist = cartRepo.findAllByEmail(loggedUser.getEmail());
+			List<PurchaseProduct> products = new ArrayList<>();
 			for (Bufcart buf : buflist) {
-				total = +(buf.getQuantity() * buf.getPrice());
+				Product actualProduct = prodRepo.findByProductid(buf.getProductId());
+				if (actualProduct.getQuantity() < buf.getQuantity()) {
+					throw new PlaceOrderCustomException("Unable to place order, Quantity is exceeded");
+				} else {
+					total = +(buf.getQuantity() * buf.getPrice());
+					PurchaseProduct product = new PurchaseProduct();
+					product.setQuantity(buf.getQuantity());
+//					actualProduct.setQuantity(actualProduct.getQuantity() - buf.getQuantity());
+//					actualProduct = prodRepo.save(actualProduct);
+					product.setProduct(actualProduct);
+//				product=purchaseProductRepository.save(product);
+					products.add(product);
+				}
 			}
+			po.setProducts(products);
 			po.setTotalCost(total);
 			PlaceOrder res = ordRepo.save(po);
 			buflist.forEach(bufcart -> {
 				bufcart.setOrderId(res.getOrderId());
-				cartRepo.save(bufcart);
+				cartRepo.delete(bufcart);
 
 			});
 			resp.setStatus(ResponseCode.SUCCESS_CODE);
