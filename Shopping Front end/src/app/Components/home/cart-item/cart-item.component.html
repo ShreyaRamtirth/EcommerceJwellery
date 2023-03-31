@@ -2,7 +2,7 @@
 
 <div class="container px-3 my-5 clearfix">
   <!-- Shopping cart table -->
-  <div class="card">
+  <div class="card" id="cart" >
       <div class="card-header">
           <h2>Shopping Cart</h2>
       </div>
@@ -39,7 +39,7 @@
                   </td>
                   <td class="text-right font-weight-semibold align-middle p-4">{{cart.price | currency:'INR'}}</td>
                   <td class="align-middle p-4">
-                    <input type="number" class="text-center" (click)="updateCart(prod,quant)" value="{{cart.quantity}}" #quant>
+                    <input type="number" class="text-center" min="1" (click)="updateCart(prod,quant)" value="{{cart.quantity}}" #quant>
 
                   </td>
                   <td class="text-right font-weight-semibold align-middle p-4"> {{cart.quantity*cart.price | currency:'INR'}}
@@ -76,11 +76,42 @@
       
           <div class="float-right">
             <button type="button" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Back to shopping</button>
-            <div class="offset-1 col-2"><button type="button" class="btn btn-secondary align-right" (click)="placeOrder()">Checkout </button>
+            <div class="offset-1 col-2"><button type="button" class="btn btn-secondary align-right" (click)="displayPayment()" > Payment </button>
             
         </div>
     </div>
+
+
+
+  
 </div>
+</div>
+
+<div class="card payment px-4" id="payment">
+  <p class="h8 py-3">Payment Details</p>
+  <div class="row gx-3">
+      <div class="col-12">
+          <div class="d-flex flex-column">
+              <p class="text mb-1">Person Name {{name}}</p>
+          </div>
+      </div>
+      <div class="col-12 ps-3">
+        Payment Mode: Cash On Delivery
+      </div>
+      <div class="col-12">
+              <span class="ps-3">Pay {{totalSum | currency:'INR'}}</span>
+      </div>
+  </div>
+
+  <div class="col-12 mt-3">
+    <div class="btn btn-primary mt-30">
+      <button type="button" class="btn align-right" (click)="placeOrder()" >Checkout </button>
+        <span class="fas fa-arrow-right"></span>
+    </div>
+</div>
+</div>
+</div>
+
 
 
 

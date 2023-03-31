@@ -13,6 +13,8 @@ export class CartItemComponent implements OnInit {
 
   private auth: string;
   cartlist: Cart[];
+  name: String;
+  placeStatus: string;
   totalSum: number = 0;
   constructor(private api: ApiService, private route: Router) {
 
@@ -21,11 +23,16 @@ export class CartItemComponent implements OnInit {
   ngOnInit() {
     this.api.getCartItems().subscribe(res => {
       this.cartlist = res.oblist;
+      this.name = res.oblist[0].email;      
       this.cartlist.forEach(value => {
         this.totalSum = this.totalSum + (value.quantity * value.price);
-      });
+      });      
     });
 
+    const payment = document.getElementById('payment');
+    if (payment != null) {
+      payment.style.display = 'none';
+    }
   }
   updateCart(id:any, quantity:any) {
     this.api.updateCartItem(id.value, quantity.value).subscribe(res => {
@@ -34,6 +41,7 @@ export class CartItemComponent implements OnInit {
         this.totalSum = this.totalSum + (value.quantity * value.price);
       });
     });
+    
   }
   deleteItem(id:any) {
     this.api.deleteCartItem(id.value).subscribe(res => {
@@ -47,11 +55,37 @@ export class CartItemComponent implements OnInit {
   }
 
   placeOrder() {
+    //console.log("response");
+    
     this.api.placeOrder().subscribe(res => {
-      console.log(res);
-    });
-    alert('order placed!!');
+      this.placeStatus = res.status;
+      if(this.placeStatus == "200"){
+        alert('order is placed!!');
+      }
+    }, error=> {console.log(error);
+      alert('order is not placed due to insufficient quantity!!');
+
+    }
+    );
+    // console.log(this.placeStatus);
+    
+
+    
+
     this.route.navigate(['/home']);
+  }
+
+  displayPayment(){
+    const cart = document.getElementById('cart');
+
+    if (cart != null) {
+      cart.style.display = 'none';
+    }
+
+    const payment = document.getElementById('payment');
+    if (payment != null) {
+      payment.style.display = 'block';
+    }
   }
 
 }
